@@ -3,20 +3,23 @@ pipeline
 agent any
 stages
 {
-    stage('scm checkout') 
-    {
-    steps { git branch: 'master', url: 'https://github.com/prakashk0301/maven-project' }
-    }
+  stage('scm checkout')
+  { steps {  git branch: 'master', url: 'https://github.com/balausnale/maven-project'  } }
 
-    stage ('code build')
-    {
-        steps { withMaven(jdk: 'Local_JDK', maven: 'local_maven_3.5') 
-        {  sh 'mvn package'  } 
-              }
-    }
+  stage('code build')
+  { steps {  withMaven(jdk: 'LocalJDK', maven: 'local_maven_3.5') {
+      sh 'mvn clean package'                    // provide maven command
 
-     stage ('send artifacts and playbook from workspace area to ansible master')
-         {steps { sshPublisher(publishers: [sshPublisherDesc(configName: 'ansible-master', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '//etc//ansible//playbooks', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'webapp/target/webapp.war'), sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook -i /etc/ansible/dev_inventory_file /etc/ansible/playbooks/deploy_playbook.yml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '//etc//ansible//playbooks', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'deploy_playbook.yml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)]) }}
+} } }
+
+
+  stage('deploy to dev')
+    { steps {
+       sshagent(['tomcat-host2']) {
+       sh 'scp -o StrictHostKeyChecking=no */target/*.war  ec2-user@172.31.3.245:/var/lib/tomcat/webapps'
+    }
+            }
+         }
+
 }
-
 }
