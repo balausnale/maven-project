@@ -7,7 +7,7 @@ stages
   { steps {  git branch: 'master', url: 'https://github.com/balausnale/maven-project'  } }
 
   stage('code build')
-  { steps {  withMaven(jdk: 'LocalJDK', maven: 'local_maven_3.5') {
+  { steps {  withMaven(jdk: 'local_jdk', maven: 'local_maven') {
       sh 'mvn clean package'                    // provide maven command
 
 } } }
