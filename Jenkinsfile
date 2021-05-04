@@ -16,9 +16,9 @@ stages
   stage('deploy to dev')
     { steps {
        withDockerRegistry(credentialsId: 'DockerHub', url: 'https://index.docker.io/v1/') {
-   sh 'sudo docker build -t pkw0301/feb-maven-web:latest .'
+   sh 'sudo docker build -t balausnale/feb-maven-web:latest .'
    sh 'sudo docker images'
-   sh 'sudo docker push pkw0301/feb-maven-web:latest'
+   sh 'sudo docker push balausnale/feb-maven-web:latest'
        
     } } }
 
