@@ -15,11 +15,12 @@ stages
 
   stage('deploy to dev')
     { steps {
-       sshagent(['tomcat-host2']) {
-       sh 'scp -o StrictHostKeyChecking=no */target/*.war  ec2-user@172.31.3.245:/usr/share/tomcat/webapps'
-    }
-            }
-         }
+       withDockerRegistry(credentialsId: 'DockerHub', url: 'https://index.docker.io/v1/') {
+   sh 'sudo docker build -t pkw0301/feb-maven-web:latest .'
+   sh 'sudo docker images'
+   sh 'sudo docker push pkw0301/feb-maven-web:latest'
+       
+    } } }
 
 }
 }
